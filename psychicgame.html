@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Psychic Game</title>
+	<link rel="stylesheet" href="assets/css/reset.css">
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div class="jumbotron">
+	<div class="container text-center">
+		<h1>A <em>Bit</em> Psychic</h1>
+		<h2 class="lead">Can you think like the computer?</h2>
+	</div>
+</div>
+
+<div class="container text-center" style="margin-bottom: 20px;">
+		The computer selected a random letter from <kbd>A-Z</kbd>.
+
+		<br><br>
+
+		Can you guess which letter your computer chose. You get 9 guesses. Type any letter, <kbd>A-Z</kbd>, to begin.
+</div>
+
+<div class="container">
+	<div class="well center-block text-center" style="max-width: 500px;">
+		<p>Wins: <span id="wins">&nbsp;</span></p>
+		<p>Losses: <span id="losses">&nbsp;</span></p>
+		<p id="guess_count_1">You've got <span id="guess_count" class="number">9</span> guesses left.</p>
+		<p>You've guessed: <span id="guesses"></span></p>
+	</div>
+</div>
+
+<script>
+var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+var guessedLetters = [];
+var wins = 0;
+var losses = 0;
+var guesses = 9;
+var computer = "";
+
+
+function chooseLetter() {
+	var randLetter = letters[Math.floor(Math.random() * letters.length)];
+	computer = randLetter;
+	return computer;
+}
+
+document.onkeydown = function(e) {
+	if (guesses === 9) {
+		chooseLetter();
+	};
+};
+
+document.onkeyup = function(e) {
+
+	if (e.keyCode >= 65 && e.keyCode <= 90) {
+
+		var userInput = event.key.toLowerCase();
+
+		if (userInput === computer) {
+			wins++
+			document.getElementById("wins").innerHTML = wins;
+			guesses = 9;
+			document.getElementById("guess_count").innerHTML = "9";
+			guessedLetters = [];
+			document.getElementById("guesses").innerHTML = "&nbsp;";
+			return;
+		} else {
+			if (guessedLetters.length === 0) {
+				guesses--;
+				guessedLetters.push(userInput);
+				document.getElementById("guess_count").innerHTML = guesses;
+				var guessElement = document.getElementById("guesses");
+				var childElement = document.createTextNode(userInput);
+				guessElement.appendChild(childElement);
+			} else {
+				if (guessedLetters.indexOf(userInput) < 0) {
+						guesses--;
+						guessedLetters.push(userInput);
+						document.getElementById("guess_count").innerHTML = guesses;
+						var guessElement = document.getElementById("guesses");
+						var childElement = document.createTextNode(", " + userInput);
+						guessElement.appendChild(childElement);
+				 };
+			};
+		};
+
+		if (guesses === 1) {
+			document.getElementById("guess_count_1").innerHTML = "You've got <span id=\"guess_count\" class=\"number\">1</span> guess left.";
+		};
+
+		if (guesses === 0) {
+			losses++;
+			document.getElementById("losses").innerHTML = losses;
+			alert("You lost :(");
+			guessedLetters = [];
+			document.getElementById("guesses").innerHTML = "&nbsp;";
+			guesses = 9;
+			document.getElementById("guess_count").innerHTML = "9";
+		};
+	};
+};
+
+</script>
+
+</body>
+</html>
